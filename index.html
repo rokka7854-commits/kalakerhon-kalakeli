@@ -32,6 +32,11 @@
           </form>
         </div>
         <p id="locationStatus" class="status" aria-live="polite">Käytössä: Helsinki</p>
+        <div class="date-picker">
+          <label for="forecastDate">Katso kalakeliä päivälle</label>
+          <input id="forecastDate" type="date" aria-describedby="dateHelp">
+          <span id="dateHelp">Ennuste on saatavilla seuraaville 16 päivälle.</span>
+        </div>
       </div>
       <div class="fish-scene" aria-hidden="true">
         <img src="assets/hauki.webp" alt="">
@@ -43,7 +48,7 @@
     <section class="dashboard" aria-label="Kalakeli tänään">
       <article class="card fish-card">
         <div class="card-heading">
-          <div><p class="eyebrow">Tänään</p><h2>Kalansyönti</h2></div>
+          <div><p id="fishEyebrow" class="eyebrow">Tänään</p><h2>Kalansyönti</h2></div>
           <time id="todayDate"></time>
         </div>
         <div class="fish-score">
@@ -58,13 +63,13 @@
       </article>
 
       <article class="card weather-card">
-        <div class="card-heading"><div><p class="eyebrow">Sää nyt</p><h2 id="weatherTitle">Haetaan säätä…</h2></div><span id="weatherSymbol" class="weather-symbol" aria-hidden="true">◌</span></div>
+        <div class="card-heading"><div><p id="weatherEyebrow" class="eyebrow">Sää nyt</p><h2 id="weatherTitle">Haetaan säätä…</h2></div><span id="weatherSymbol" class="weather-symbol" aria-hidden="true">◌</span></div>
         <div class="temperature"><strong id="temperature">–°</strong><span id="weatherDescription">–</span></div>
         <div class="weather-grid">
           <div><span>Tuuli</span><strong id="wind">–</strong></div>
           <div><span>Puuskat</span><strong id="gusts">–</strong></div>
           <div><span>Ilmanpaine</span><strong id="pressure">–</strong></div>
-          <div><span>Sade nyt</span><strong id="rain">–</strong></div>
+          <div><span id="rainLabel">Sade nyt</span><strong id="rain">–</strong></div>
           <div><span>Pilvisyys</span><strong id="clouds">–</strong></div>
           <div><span>Kosteus</span><strong id="humidity">–</strong></div>
         </div>
@@ -82,7 +87,7 @@
       </article>
 
       <article class="card rain-card">
-        <p class="eyebrow">Seuraavat 12 tuntia</p><h2>Sade ja tuuli</h2>
+        <p id="forecastEyebrow" class="eyebrow">Seuraavat tunnit</p><h2>Sade ja tuuli</h2>
         <div id="forecastStrip" class="forecast-strip" aria-live="polite"></div>
         <a id="windyLink" class="windy-link" target="_blank" rel="noopener noreferrer">Avaa tuulikartta Windyssä <span>↗</span></a>
       </article>
