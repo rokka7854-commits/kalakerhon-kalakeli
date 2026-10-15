@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a2f36">
+  <meta name="description" content="Kalakerhon kalakeli: sää, tuuli ja suuntaa-antava kalansyöntikalenteri.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <title>Kalakerhon kalakeli</title>
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="brand" href="#alku" aria-label="Kalakerhon kalakeli, alkuun"><span>〰</span> Kalakerhon kalakeli</a>
+    <button id="installButton" class="quiet-button" hidden>Asenna sovellus</button>
+  </header>
+
+  <main id="alku" class="wrap">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Sää, tuuli ja kalakeli</p>
+        <h1>Tiedä, milloin kannattaa lähteä vesille.</h1>
+        <p class="lede">Valitse paikka tai käytä puhelimen paikannusta. Kalansyöntiarvio perustuu kuun ja auringon rytmiin.</p>
+        <div class="place-tools">
+          <button id="locateButton" class="primary-button">⌖ Käytä sijaintiani</button>
+          <form id="searchForm" class="search-form">
+            <label class="sr-only" for="placeInput">Hae paikka</label>
+            <input id="placeInput" type="search" placeholder="Hae paikkakunta tai järvi" autocomplete="off">
+            <button type="submit">Hae</button>
+          </form>
+        </div>
+        <p id="locationStatus" class="status" aria-live="polite">Käytössä: Helsinki</p>
+      </div>
+      <div class="fish-scene" aria-hidden="true">
+        <img src="assets/hauki.png" alt="">
+        <img src="assets/ahven.png" alt="">
+        <img src="assets/kuha.png" alt="">
+      </div>
+    </section>
+
+    <section class="dashboard" aria-label="Kalakeli tänään">
+      <article class="card fish-card">
+        <div class="card-heading">
+          <div><p class="eyebrow">Tänään</p><h2>Kalansyönti</h2></div>
+          <time id="todayDate"></time>
+        </div>
+        <div class="fish-score">
+          <span id="fishScore" class="score-number">–</span>
+          <div><strong id="fishLabel">Lasketaan arviota…</strong><p id="fishExplanation">Suuntaa-antava solunar-arvio valitulle paikalle.</p></div>
+        </div>
+        <div id="fishScale" class="fish-scale" aria-label="Kalansyönnin arvio asteikolla 1–5"></div>
+        <div class="bite-times">
+          <div><span>Paras aamulla</span><strong id="morningBite">–</strong></div>
+          <div><span>Paras illalla</span><strong id="eveningBite">–</strong></div>
+        </div>
+      </article>
+
+      <article class="card weather-card">
+        <div class="card-heading"><div><p class="eyebrow">Sää nyt</p><h2 id="weatherTitle">Haetaan säätä…</h2></div><span id="weatherSymbol" class="weather-symbol" aria-hidden="true">◌</span></div>
+        <div class="temperature"><strong id="temperature">–°</strong><span id="weatherDescription">–</span></div>
+        <div class="weather-grid">
+          <div><span>Tuuli</span><strong id="wind">–</strong></div>
+          <div><span>Puuskat</span><strong id="gusts">–</strong></div>
+          <div><span>Ilmanpaine</span><strong id="pressure">–</strong></div>
+          <div><span>Sade nyt</span><strong id="rain">–</strong></div>
+          <div><span>Pilvisyys</span><strong id="clouds">–</strong></div>
+          <div><span>Kosteus</span><strong id="humidity">–</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="lower-grid">
+      <article class="card sun-card">
+        <p class="eyebrow">Päivän valo</p><h2>Aurinko ja kuu</h2>
+        <div class="sun-grid">
+          <div><span class="sun-icon">↑</span><span>Auringonnousu</span><strong id="sunrise">–</strong></div>
+          <div><span class="sun-icon">↓</span><span>Auringonlasku</span><strong id="sunset">–</strong></div>
+          <div><span class="moon-icon" id="moonIcon">◐</span><span>Kuun vaihe</span><strong id="moonPhase">–</strong></div>
+        </div>
+      </article>
+
+      <article class="card rain-card">
+        <p class="eyebrow">Seuraavat 12 tuntia</p><h2>Sade ja tuuli</h2>
+        <div id="forecastStrip" class="forecast-strip" aria-live="polite"></div>
+        <a id="windyLink" class="windy-link" target="_blank" rel="noopener noreferrer">Avaa tuulikartta Windyssä <span>↗</span></a>
+      </article>
+    </section>
+
+    <section class="water-card card">
+      <div><p class="eyebrow">Vesistön tila</p><h2>Vedenpinta</h2><p>Tarkka vedenpinta vaatii valitun mittausaseman. Valitse kalaseuralle sopiva asema Vesi.fi-palvelusta ja tallenna se myöhempää versiota varten.</p></div>
+      <a href="https://www.vesi.fi/karttapalvelu/?teema=vedenkorkeus&theme=vedenkorkeus" target="_blank" rel="noopener noreferrer" class="secondary-button">Avaa vedenpintakartta ↗</a>
+    </section>
+
+    <section class="fish-gallery" aria-label="Kalalajit">
+      <article><img src="assets/hauki.png" alt="Hauki"><h2>Hauki</h2><p>Tuuli ja sameus voivat tehdä matalista lahdista kiinnostavia.</p></article>
+      <article><img src="assets/ahven.png" alt="Ahven"><h2>Ahven</h2><p>Seuraa säätä ja kokeile päivän aktiivisimpia hetkiä.</p></article>
+      <article><img src="assets/kuha.png" alt="Kuha"><h2>Kuha</h2><p>Illan hämärä ja tasainen keli ovat usein kokeilemisen arvoisia.</p></article>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p>Kalansyöntiarvio on kuun ja auringon kiertoon perustuva suuntaa-antava arvio, ei saalistakuu.</p>
+    <p>Sää: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Vedenpinta: <a href="https://www.vesi.fi/" target="_blank" rel="noopener noreferrer">Vesi.fi</a> · Tuulikartta: <a href="https://www.windy.com/" target="_blank" rel="noopener noreferrer">Windy</a></p>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
