@@ -1,0 +1,12 @@
+{
+  "name": "Kalakerhon kalakeli",
+  "short_name": "Kalakeli",
+  "description": "Sää, tuuli ja suuntaa-antava kalansyöntikalenteri.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#e9f5f2",
+  "theme_color": "#0a2f36",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
