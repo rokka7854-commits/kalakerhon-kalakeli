@@ -40,11 +40,12 @@ function calculateFishing(date) {
 async function getWeather() {
   $("weatherTitle").textContent="Haetaan säätä…";
   const vars="temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,cloud_cover,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m";
-  const url=`https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=${vars}&hourly=temperature_2m,precipitation_probability,precipitation,wind_speed_10m,weather_code&forecast_days=2&timezone=auto`;
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=${vars}&hourly=temperature_2m,precipitation_probability,precipitation,wind_speed_10m,weather_code&daily=sunrise,sunset&forecast_days=2&timezone=auto`;
   try {
     const response=await fetch(url); if(!response.ok) throw new Error("Säähaku ei onnistunut");
     const data=await response.json(); state.timezone=data.timezone||state.timezone; const c=data.current; const [description,symbol]=weatherCodes[c.weather_code]||["Vaihtelevan pilvistä","◌"];
     $("weatherTitle").textContent=state.name; $("weatherSymbol").textContent=symbol; $("temperature").textContent=`${Math.round(c.temperature_2m)}°`; $("weatherDescription").textContent=description;
+    $("sunrise").textContent=data.daily.sunrise[0].slice(11); $("sunset").textContent=data.daily.sunset[0].slice(11);
     $("wind").textContent=`${Math.round(c.wind_speed_10m)} m/s ${degToDirection(c.wind_direction_10m)}`; $("gusts").textContent=`${Math.round(c.wind_gusts_10m)} m/s`; $("pressure").textContent=`${Math.round(c.pressure_msl)} hPa`;
     $("rain").textContent=`${Number(c.precipitation).toFixed(1)} mm`; $("clouds").textContent=`${Math.round(c.cloud_cover)} %`; $("humidity").textContent=`${Math.round(c.relative_humidity_2m)} %`;
     const now=new Date(), currentHour=now.getHours(), cells=[];
@@ -53,7 +54,7 @@ async function getWeather() {
   } catch(error) { $("weatherTitle").textContent="Säähaku ei onnistunut"; $("weatherDescription").textContent="Tarkista verkkoyhteys ja yritä uudelleen."; $("forecastStrip").innerHTML="<p>Sääennustetta ei saatu juuri nyt.</p>"; }
 }
 
-function renderAstronomy() { const now=new Date(), times=sunTimes(now,state.lat,state.lon); $("todayDate").textContent=dateText(); $("sunrise").textContent=formatTime(times.rise); $("sunset").textContent=formatTime(times.set); calculateFishing(now); }
+function renderAstronomy() { const now=new Date(); $("todayDate").textContent=dateText(); calculateFishing(now); }
 function updateWindy() { $("windyLink").href=`https://www.windy.com/${state.lat.toFixed(4)}/${state.lon.toFixed(4)}?${state.lat.toFixed(4)},${state.lon.toFixed(4)},9,i:wind`; }
 function refresh() { $("locationStatus").textContent=`Käytössä: ${state.name}`; renderAstronomy(); updateWindy(); getWeather(); }
 
