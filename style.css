@@ -36,6 +36,7 @@ h2 { letter-spacing:-.035em; font-size:1.32rem; margin-bottom:0; }
 .fish-scene img:nth-child(3) { width:260px; right:62px; bottom:-5px; transform:rotate(8deg); }
 .dashboard { display:grid; grid-template-columns:1fr 1.25fr; gap:18px; margin-top:18px; }
 .card { border:1px solid rgba(206,224,220,.9); border-radius:23px; background:rgba(255,253,250,.94); box-shadow:0 10px 28px rgba(22,61,64,.06); padding:25px; }
+.card-note { margin:9px 0 0; color:var(--muted); font-size:.88rem; line-height:1.48; }
 .card-heading { display:flex; justify-content:space-between; align-items:start; gap:12px; }
 .card-heading time { font-size:.85rem; color:var(--muted); white-space:nowrap; }
 .fish-card { background:linear-gradient(135deg,#fcf5df,#fffdf9 63%); }
@@ -57,6 +58,27 @@ h2 { letter-spacing:-.035em; font-size:1.32rem; margin-bottom:0; }
 .weather-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:13px 8px; border-top:1px solid var(--line); padding-top:17px; }
 .weather-grid strong { display:block; margin-top:3px; font-size:.94rem; }
 .lower-grid { display:grid; grid-template-columns:.95fr 1.3fr; gap:18px; margin-top:18px; }
+.map-card { margin-top:18px; background:linear-gradient(135deg,#eef7f4,#fffdf9 65%); }
+.map-card .card-heading { align-items:flex-start; }
+.map-panel { margin-top:18px; }
+#locationMap { height:290px; border:1px solid var(--line); border-radius:15px; overflow:hidden; background:#dbece8; }
+.map-footer { display:flex; justify-content:space-between; flex-wrap:wrap; gap:9px 18px; padding:12px 2px 0; color:var(--muted); font-size:.82rem; }
+.map-footer a { color:var(--sea); font-weight:800; }
+.insights-grid { display:grid; grid-template-columns:1.25fr .9fr; gap:18px; margin-top:18px; }
+.best-days-card { background:linear-gradient(135deg,#fbf5e7,#fffdf9 72%); }
+.best-days { display:grid; gap:8px; margin-top:17px; }
+.best-day { width:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:11px; border:1px solid #e4dfd1; border-radius:13px; padding:11px 12px; background:rgba(255,255,255,.64); text-align:left; color:var(--ink); }
+.best-day:hover { border-color:#c5a259; background:#fffaf0; }
+.best-day-date { font-weight:800; text-transform:capitalize; font-size:.9rem; }
+.best-day-meta { color:var(--muted); font-size:.78rem; line-height:1.35; }
+.best-day-score { color:var(--sea); font-weight:900; font-size:1.05rem; white-space:nowrap; }
+.trend-card { background:#f1f7f7; }
+.trend-list { display:grid; gap:12px; margin-top:19px; }
+.trend-list > div { display:flex; align-items:center; gap:11px; padding:12px 0; border-top:1px solid var(--line); }
+.trend-list > div:first-child { border-top:0; padding-top:0; }
+.trend-list span:not(.trend-icon) { display:block; color:var(--muted); font-size:.78rem; }
+.trend-list strong { display:block; margin-top:3px; font-size:.96rem; }
+.trend-icon { display:grid; place-items:center; width:35px; height:35px; flex:none; border-radius:50%; background:#dcecea; color:var(--sea); font-size:1.25rem; font-weight:900; }
 .sun-card { background:#fffdf6; }
 .sun-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:18px; }
 .sun-grid > div { padding:12px 8px; border-right:1px solid #eee5d5; }
@@ -80,5 +102,5 @@ h2 { letter-spacing:-.035em; font-size:1.32rem; margin-bottom:0; }
 footer { padding:23px 0 45px; border-top:1px solid var(--line); color:#687c7c; font-size:.8rem; line-height:1.5; }
 footer p { margin-bottom:5px; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-@media (max-width:760px) { .wrap { width:min(100% - 22px,620px); } .topbar { height:64px; } .brand { font-size:.97rem; } .hero { min-height:515px; padding:32px 23px; border-radius:22px; } h1 { font-size:2.65rem; } .fish-scene { width:460px; height:245px; right:-95px; bottom:-43px; } .fish-scene img:nth-child(1) { width:315px; } .fish-scene img:nth-child(2) { width:190px; left:8px; } .fish-scene img:nth-child(3) { width:190px; right:35px; } .dashboard,.lower-grid { grid-template-columns:1fr; } .weather-grid { grid-template-columns:repeat(3,1fr); } .water-card { display:block; } .water-card .secondary-button { display:inline-block; margin-top:17px; } .fish-gallery { grid-template-columns:1fr; margin-top:18px; } .fish-gallery article { min-height:150px; } .fish-gallery img { width:46%; right:2%; top:-9px; opacity:.4; } }
+@media (max-width:760px) { .wrap { width:min(100% - 22px,620px); } .topbar { height:64px; } .brand { font-size:.97rem; } .hero { min-height:515px; padding:32px 23px; border-radius:22px; } h1 { font-size:2.65rem; } .fish-scene { width:460px; height:245px; right:-95px; bottom:-43px; } .fish-scene img:nth-child(1) { width:315px; } .fish-scene img:nth-child(2) { width:190px; left:8px; } .fish-scene img:nth-child(3) { width:190px; right:35px; } .dashboard,.lower-grid,.insights-grid { grid-template-columns:1fr; } .weather-grid { grid-template-columns:repeat(3,1fr); } .water-card { display:block; } .water-card .secondary-button { display:inline-block; margin-top:17px; } .fish-gallery { grid-template-columns:1fr; margin-top:18px; } .fish-gallery article { min-height:150px; } .fish-gallery img { width:46%; right:2%; top:-9px; opacity:.4; } }
 @media (max-width:410px) { .hero { min-height:590px; } .place-tools { display:block; } .primary-button,.search-form { width:100%; } .search-form { margin-top:9px; height:45px; } .weather-grid { grid-template-columns:repeat(2,1fr); } .sun-grid { grid-template-columns:1fr; } .sun-grid > div { display:grid; grid-template-columns:35px 1fr auto; align-items:center; border-right:0; border-bottom:1px solid #eee5d5; } .sun-grid > div:last-child { border-bottom:0; } .sun-icon,.moon-icon { margin:0; } }
