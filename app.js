@@ -66,6 +66,7 @@ function trendText(current, future, unit, rising, falling, threshold) {
   return `${change>0 ? rising : falling} ${rounded.toLocaleString("fi-FI")} ${unit}`;
 }
 function renderTrends(data) {
+  if(!$("pressureTrend") || !$("windTrend")) return;
   const start=Math.max(0,data.hourly.time.findIndex(time=>time>=data.current.time));
   const end=Math.min(data.hourly.time.length-1,start+6);
   $("pressureTrend").textContent=trendText(data.current.pressure_msl,data.hourly.pressure_msl[end],"hPa","Nousee","Laskee",0.8);
@@ -81,6 +82,7 @@ function outlookScore(d,index) {
   return Math.min(5,Math.max(1,Math.round((base.score+weatherBoost)*2)/2));
 }
 function renderBestDays(data) {
+  if(!$("bestDays")) return;
   const d=data.daily;
   const days=d.time.map((date,index)=>({date,index,score:outlookScore(d,index)})).sort((a,b)=>b.score-a.score||a.index-b.index).slice(0,3);
   $("bestDays").innerHTML=days.map(day=>`<button class="best-day" type="button" data-date="${day.date}" aria-label="Näytä ennuste päivälle ${shortDate(day.date)}"><span class="best-day-date">${shortDate(day.date)}</span><span class="best-day-meta">tuuli ${Math.round(d.wind_speed_10m_max[day.index])} m/s · sade ${Number(d.precipitation_sum[day.index]).toFixed(1)} mm</span><span class="best-day-score">${day.score}/5</span></button>`).join("");
@@ -126,7 +128,7 @@ async function getWeather() {
 
 function coordinateLabel() { return `${state.lat.toFixed(4)}, ${state.lon.toFixed(4)}`; }
 function updateMap(focus=false) {
-  $("mapCoordinates").textContent=coordinateLabel();
+  if($("mapCoordinates")) $("mapCoordinates").textContent=coordinateLabel();
   if(!fishingMap) return;
   const point=[state.lat,state.lon];
   if(mapMarker) mapMarker.setLatLng(point); else mapMarker=L.marker(point).addTo(fishingMap);
@@ -144,8 +146,8 @@ function updateWindy() { $("windyLink").href=`https://www.windy.com/${state.lat.
 function refresh() { $("locationStatus").textContent=`Käytössä: ${state.name}`; updateWindy(); getWeather(); }
 
 $("forecastDate").addEventListener("change",event=>{ state.selectedDate=event.target.value; refresh(); });
-$("bestDays").addEventListener("click",event=>{ const button=event.target.closest("button[data-date]"); if(!button) return; state.selectedDate=button.dataset.date; $("forecastDate").value=state.selectedDate; refresh(); });
-$("mapToggle").addEventListener("click",()=>{ const panel=$("mapPanel"), open=panel.hidden; panel.hidden=!open; $("mapToggle").textContent=open ? "Sulje kartta" : "Avaa kartta"; $("mapToggle").setAttribute("aria-expanded",String(open)); if(open) initialiseMap(); });
+if($("bestDays")) $("bestDays").addEventListener("click",event=>{ const button=event.target.closest("button[data-date]"); if(!button) return; state.selectedDate=button.dataset.date; $("forecastDate").value=state.selectedDate; refresh(); });
+if($("mapToggle")) $("mapToggle").addEventListener("click",()=>{ const panel=$("mapPanel"), open=panel.hidden; panel.hidden=!open; $("mapToggle").textContent=open ? "Sulje kartta" : "Avaa kartta"; $("mapToggle").setAttribute("aria-expanded",String(open)); if(open) initialiseMap(); });
 $("locateButton").addEventListener("click",()=>{ if(!navigator.geolocation){ $("locationStatus").textContent="Selain ei tue paikannusta."; return; } $("locationStatus").textContent="Haetaan sijaintia…"; navigator.geolocation.getCurrentPosition((pos)=>{ state.lat=pos.coords.latitude; state.lon=pos.coords.longitude; state.name="Oma sijainti"; updateMap(true); refresh(); },()=>{ $("locationStatus").textContent="Paikannus ei onnistunut. Voit hakea paikan nimellä."; },{enableHighAccuracy:false,timeout:10000}); });
 $("searchForm").addEventListener("submit",async(event)=>{ event.preventDefault(); const query=$("placeInput").value.trim(); if(!query) return; $("locationStatus").textContent="Haetaan paikkaa…"; try { const response=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=fi&format=json`); const data=await response.json(), result=data.results?.[0]; if(!result) throw new Error("Paikkaa ei löytynyt"); state.lat=result.latitude; state.lon=result.longitude; state.name=[result.name,result.admin1,result.country].filter(Boolean).join(", "); updateMap(true); refresh(); } catch { $("locationStatus").textContent="Paikkaa ei löytynyt. Kokeile paikkakuntaa tai järven nimeä."; } });
 
