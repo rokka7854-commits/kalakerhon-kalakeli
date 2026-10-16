@@ -9,6 +9,7 @@
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icon.svg">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <title>Kalakerhon kalakeli</title>
 </head>
 <body>
@@ -45,6 +46,17 @@
       </div>
     </section>
 
+    <section class="card map-card" aria-label="Kalapaikan valinta kartalta">
+      <div class="card-heading">
+        <div><p class="eyebrow">Kalapaikka</p><h2>Valitse sääpiste kartalta</h2><p class="card-note">Napauta karttaa: sää- ja kalakeli päivittyvät valittuun pisteeseen. Sijaintia ei tallenneta.</p></div>
+        <button id="mapToggle" class="secondary-button" type="button" aria-expanded="false" aria-controls="mapPanel">Avaa kartta</button>
+      </div>
+      <div id="mapPanel" class="map-panel" hidden>
+        <div id="locationMap" role="application" aria-label="Kartta kalapaikan valintaan"></div>
+        <div class="map-footer"><span id="mapCoordinates">60.1699, 24.9384</span><a href="https://kalastusrajoitus.fi/" target="_blank" rel="noopener noreferrer">Tarkista kalastusrajoitukset ↗</a></div>
+      </div>
+    </section>
+
     <section class="dashboard" aria-label="Kalakeli tänään">
       <article class="card fish-card">
         <div class="card-heading">
@@ -72,6 +84,22 @@
           <div><span id="rainLabel">Sade nyt</span><strong id="rain">–</strong></div>
           <div><span>Pilvisyys</span><strong id="clouds">–</strong></div>
           <div><span>Kosteus</span><strong id="humidity">–</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="insights-grid" aria-label="Kalakelin yhteenveto">
+      <article class="card best-days-card">
+        <p class="eyebrow">Seuraavat 16 päivää</p><h2>Lupaavimmat kalakelipäivät</h2>
+        <p class="card-note">Arvio yhdistää kuun vaiheen sekä ennustetun tuulen, puuskat ja sateen. Napauta päivää, jos haluat tarkemman ennusteen.</p>
+        <div id="bestDays" class="best-days" aria-live="polite"></div>
+      </article>
+      <article class="card trend-card">
+        <p class="eyebrow">Säämuutos</p><h2>Seuraavat 6 tuntia</h2>
+        <p class="card-note">Muutos lasketaan nykyisestä säästä. Se on ennusteen tulkinta, ei kalatakuuta.</p>
+        <div class="trend-list">
+          <div><span class="trend-icon">↕</span><div><span>Ilmanpaine</span><strong id="pressureTrend">Lasketaan…</strong></div></div>
+          <div><span class="trend-icon">〰</span><div><span>Tuuli</span><strong id="windTrend">Lasketaan…</strong></div></div>
         </div>
       </article>
     </section>
@@ -109,6 +137,7 @@
     <p>Kalansyöntiarvio on kuun ja auringon kiertoon perustuva suuntaa-antava arvio, ei saalistakuu.</p>
     <p>Sää: <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> · Vedenpinta: <a href="https://www.vesi.fi/" target="_blank" rel="noopener noreferrer">Vesi.fi</a> · Tuulikartta: <a href="https://www.windy.com/" target="_blank" rel="noopener noreferrer">Windy</a></p>
   </footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="app.js"></script>
 </body>
 </html>
