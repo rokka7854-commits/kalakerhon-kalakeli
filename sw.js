@@ -1,5 +1,5 @@
-const CACHE = "kalakeli-v7";
-const ASSETS = ["./","./index.html","./style.css?v=wind1","./app.js?v=wind1","./manifest.webmanifest","./assets/icon.svg","./assets/hauki.webp","./assets/ahven.webp","./assets/kuha.webp"];
+const CACHE = "kalakeli-v8";
+const ASSETS = ["./","./index.html","./style.css?v=wind2","./app.js?v=wind2","./manifest.webmanifest","./assets/icon.svg","./assets/hauki.webp","./assets/ahven.webp","./assets/kuha.webp"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener("fetch", event => {
