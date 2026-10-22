@@ -7,7 +7,21 @@ let mapMarker;
 const weatherCodes = { 0:["Selkeää","☀"],1:["Enimmäkseen selkeää","◔"],2:["Puolipilvistä","◒"],3:["Pilvistä","☁"],45:["Sumua","≋"],48:["Huurresumua","≋"],51:["Tihkusadetta","☂"],53:["Tihkusadetta","☂"],55:["Tihkusadetta","☂"],61:["Vesisadetta","☂"],63:["Vesisadetta","☂"],65:["Vesisadetta","☂"],71:["Lumikuuroja","❄"],73:["Lumikuuroja","❄"],75:["Lumisadetta","❄"],80:["Sadekuuroja","☂"],81:["Sadekuuroja","☂"],82:["Sadekuuroja","☂"],95:["Ukkosta","ϟ"],96:["Ukkoskuuroja","ϟ"],99:["Ukkoskuuroja","ϟ"] };
 
 function dateText(dateKey) { return new Intl.DateTimeFormat("fi-FI", { weekday:"long", day:"numeric", month:"long", timeZone:state.timezone }).format(new Date(`${dateKey}T12:00:00`)); }
-function degToDirection(deg) { const dirs=["P","PPKO","KO","IKKO","I","ILKO","L","LLKO","L","LLKA","LÄ","ELÄ","E","ELO","LO","LLO","PLO"]; return dirs[Math.round(deg/22.5)%16]; }
+function windDirection(deg) {
+  const directions=[
+    { from:"pohjoisesta", arrow:"↓" }, { from:"koillisesta", arrow:"↙" },
+    { from:"idästä", arrow:"←" }, { from:"kaakosta", arrow:"↖" },
+    { from:"etelästä", arrow:"↑" }, { from:"lounaasta", arrow:"↗" },
+    { from:"lännestä", arrow:"→" }, { from:"luoteesta", arrow:"↘" }
+  ];
+  const index=Math.round(((deg%360)+360)%360/45)%8;
+  return { ...directions[index], index };
+}
+function windLabel(deg) { const direction=windDirection(deg); return `${direction.arrow} ${direction.from}`; }
+function windDirectionTrend(currentDeg,futureDeg) {
+  const current=windDirection(currentDeg), future=windDirection(futureDeg);
+  return current.index===future.index ? `pysyy ${current.from}` : `kääntyy ${current.from} ${future.from}`;
+}
 function pad(v) { return String(v).padStart(2,"0"); }
 function average(values) { const usable=values.filter(Number.isFinite); return usable.length ? usable.reduce((sum,value)=>sum+value,0)/usable.length : null; }
 
@@ -70,7 +84,8 @@ function renderTrends(data) {
   const start=Math.max(0,data.hourly.time.findIndex(time=>time>=data.current.time));
   const end=Math.min(data.hourly.time.length-1,start+6);
   $("pressureTrend").textContent=trendText(data.current.pressure_msl,data.hourly.pressure_msl[end],"hPa","Nousee","Laskee",0.8);
-  $("windTrend").textContent=trendText(data.current.wind_speed_10m,data.hourly.wind_speed_10m[end],"m/s","Voimistuu","Heikkenee",0.4);
+  const speed=trendText(data.current.wind_speed_10m,data.hourly.wind_speed_10m[end],"m/s","Voimistuu","Heikkenee",0.4);
+  $("windTrend").textContent=`${speed} · ${windDirectionTrend(data.current.wind_direction_10m,data.hourly.wind_direction_10m[end])}`;
 }
 function shortDate(dateKey) { return new Intl.DateTimeFormat("fi-FI", { weekday:"short", day:"numeric", month:"numeric", timeZone:state.timezone }).format(new Date(`${dateKey}T12:00:00`)); }
 function outlookScore(d,index) {
@@ -98,7 +113,7 @@ function renderWeather(data, dayIndex) {
   $("weatherTitle").textContent=state.name; $("weatherSymbol").textContent=symbol;
   $("temperature").textContent=isToday ? `${Math.round(c.temperature_2m)}°` : `${Math.round(d.temperature_2m_max[dayIndex])}°`;
   $("weatherDescription").textContent=isToday ? description : `${description} · ${Math.round(d.temperature_2m_min[dayIndex])}–${Math.round(d.temperature_2m_max[dayIndex])}°`;
-  $("wind").textContent=isToday ? `${Math.round(c.wind_speed_10m)} m/s ${degToDirection(c.wind_direction_10m)}` : `${Math.round(d.wind_speed_10m_max[dayIndex])} m/s ${degToDirection(d.wind_direction_10m_dominant[dayIndex])}`;
+  $("wind").textContent=isToday ? `${Math.round(c.wind_speed_10m)} m/s ${windLabel(c.wind_direction_10m)}` : `${Math.round(d.wind_speed_10m_max[dayIndex])} m/s ${windLabel(d.wind_direction_10m_dominant[dayIndex])}`;
   $("gusts").textContent=isToday ? `${Math.round(c.wind_gusts_10m)} m/s` : `${Math.round(d.wind_gusts_10m_max[dayIndex])} m/s`;
   $("pressure").textContent=`${Math.round(isToday ? c.pressure_msl : data.hourly.pressure_msl[noonIndex])} hPa`;
   $("rainLabel").textContent=isToday ? "Sade nyt" : "Sade yhteensä";
@@ -113,7 +128,7 @@ function renderWeather(data, dayIndex) {
 async function getWeather() {
   $("weatherTitle").textContent="Haetaan säätä…";
   const current="temperature_2m,relative_humidity_2m,precipitation,cloud_cover,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m";
-  const hourly="temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,cloud_cover,weather_code,pressure_msl,wind_speed_10m";
+  const hourly="temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,cloud_cover,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m";
   const daily="weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset";
   const url=`https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lon}&current=${current}&hourly=${hourly}&daily=${daily}&forecast_days=16&wind_speed_unit=ms&timezone=auto`;
   try {
