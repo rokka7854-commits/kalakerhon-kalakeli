@@ -9,10 +9,14 @@ const weatherCodes = { 0:["Selkeää","☀"],1:["Enimmäkseen selkeää","◔"],
 function dateText(dateKey) { return new Intl.DateTimeFormat("fi-FI", { weekday:"long", day:"numeric", month:"long", timeZone:state.timezone }).format(new Date(`${dateKey}T12:00:00`)); }
 function windDirection(deg) {
   const directions=[
-    { from:"pohjoisesta", arrow:"↓" }, { from:"koillisesta", arrow:"↙" },
-    { from:"idästä", arrow:"←" }, { from:"kaakosta", arrow:"↖" },
-    { from:"etelästä", arrow:"↑" }, { from:"lounaasta", arrow:"↗" },
-    { from:"lännestä", arrow:"→" }, { from:"luoteesta", arrow:"↘" }
+    { from:"pohjoisesta", to:"etelään", steady:"pohjoistuuli jatkuu", arrow:"↓" },
+    { from:"koillisesta", to:"lounaaseen", steady:"koillistuuli jatkuu", arrow:"↙" },
+    { from:"idästä", to:"länteen", steady:"itäinen tuuli jatkuu", arrow:"←" },
+    { from:"kaakosta", to:"luoteeseen", steady:"kaakkoistuuli jatkuu", arrow:"↖" },
+    { from:"etelästä", to:"pohjoiseen", steady:"etelätuuli jatkuu", arrow:"↑" },
+    { from:"lounaasta", to:"koilliseen", steady:"lounaistuuli jatkuu", arrow:"↗" },
+    { from:"lännestä", to:"itään", steady:"länsituuli jatkuu", arrow:"→" },
+    { from:"luoteesta", to:"kaakkoon", steady:"luoteistuuli jatkuu", arrow:"↘" }
   ];
   const index=Math.round(((deg%360)+360)%360/45)%8;
   return { ...directions[index], index };
@@ -20,7 +24,7 @@ function windDirection(deg) {
 function windLabel(deg) { const direction=windDirection(deg); return `${direction.arrow} ${direction.from}`; }
 function windDirectionTrend(currentDeg,futureDeg) {
   const current=windDirection(currentDeg), future=windDirection(futureDeg);
-  return current.index===future.index ? `pysyy ${current.from}` : `kääntyy ${current.from} ${future.from}`;
+  return current.index===future.index ? current.steady : `kääntyy ${current.from} ${future.to}`;
 }
 function pad(v) { return String(v).padStart(2,"0"); }
 function average(values) { const usable=values.filter(Number.isFinite); return usable.length ? usable.reduce((sum,value)=>sum+value,0)/usable.length : null; }
